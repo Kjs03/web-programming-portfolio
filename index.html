@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="description"
+    content="Jinsung Kim — Data Science, AI, Research and Web Portfolio"
+  >
+
+  <title>Jinsung Kim — Portfolio</title>
+
+  <link rel="stylesheet" href="style.css?v=21">
+  <script src="script.js?v=6" defer></script>
+</head>
+
+<body>
+
+  <div class="scroll-progress">
+    <span></span>
+  </div>
+
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+  <div class="ambient ambient-three"></div>
+
+  <header class="site-header">
+
+    <a class="brand" href="#top">
+      JINSUNG KIM<span>.</span>
+    </a>
+
+    <nav class="main-nav">
+
+      <div class="nav-dropdown">
+
+        <a class="nav-main" href="#research">
+          Research
+          <span class="chevron">⌄</span>
+        </a>
+
+        <div class="dropdown-panel">
+
+          <a href="#mri" class="dropdown-item">
+            <span class="drop-index">01</span>
+            <span>
+              <strong>脳機能特徴抽出</strong>
+              <small>fMRI × Autoencoder × PCA</small>
+            </span>
+          </a>
+
+          <a href="#office" class="dropdown-item">
+            <span class="drop-index">02</span>
+            <span>
+              <strong>空間複雑性の周波数分析</strong>
+              <small>Multifractal × FFT</small>
+            </span>
+          </a>
+
+        </div>
+      </div>
+
+      <a href="#projects">Projects</a>
+      <a href="#skills">Skills</a>
+      <a href="#contact">Contact</a>
+
+    </nav>
+
+  </header>
+
+
+  <main id="top">
+
+    <section class="hero">
+
+      <div class="hero-grid"></div>
+
+      <div class="hero-ring ring-a"></div>
+      <div class="hero-ring ring-b"></div>
+
+      <div class="hero-content">
+
+        <p class="hero-label reveal">
+          JINSUNG KIM · PORTFOLIO 2026
+        </p>
+
+        <h1 class="hero-title reveal">
+          <span>Data.</span>
+          <span>AI.</span>
+        </h1>
+
+        <div class="hero-footer reveal">
+
+          <p>
+            複雑なデータを、<br>
+            理解できる形へ。
+          </p>
+
+          <a href="#about" class="circle-button">
+            <span>Explore</span>
+            <span>↓</span>
+          </a>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <section class="about section" id="about">
+
+      <div class="section-label reveal">
+        01 / ABOUT
+      </div>
+
+      <div class="about-grid">
+
+        <h2 class="display-title reveal">
+          Looking at<br>
+          complexity<br>
+          from a different<br>
+          angle.
+        </h2>
+
+        <div class="about-text reveal">
+
+          <p class="lead">
+            AI・データサイエンスを軸に、
+            異なる種類のデータから意味のある構造を見つけ、
+            理解できる形に変換することに取り組んでいます。
+          </p>
+
+          <p>
+            東京都市大学 デザイン・データ科学部
+            デザイン・データ科学科に所属しています。
+            これまで、脳機能データ、空間データ、
+            Webアプリケーションなど、
+            性質の異なるデータを対象に研究・開発を行ってきました。
+          </p>
+
+          <p>
+            脳機能研究では、3次元fMRIを
+            Convolutional Autoencoderで潜在表現へ変換し、
+            PCAを用いて被験者間の特徴を可視化しました。
+            空間研究では、家具配置の局所的な複雑性を
+            Multifractal Analysisで数値化し、
+            人の移動に沿った変化をFFTによって周波数領域から分析しています。
+          </p>
+
+          <p>
+            単にモデルを適用するだけではなく、
+            <strong>
+              「データをどう表現すれば、
+              人が意味を理解できるのか」
+            </strong>
+            を重視しています。
+            また、分析だけでなく、
+            AIを用いたWebアプリケーションや
+            インタラクティブなデータ可視化の実装にも取り組んでいます。
+          </p>
+
+          <div class="about-tags">
+            <span>Data Science</span>
+            <span>Artificial Intelligence</span>
+            <span>Research</span>
+            <span>Visualization</span>
+            <span>Web Development</span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <div class="work-controls" role="group" aria-label="Filter and sort works">
+
+      <div class="work-control">
+        <label for="categoryFilter">Category</label>
+        <select id="categoryFilter" aria-controls="researchGrid projectGrid">
+          <option value="all">All Categories</option>
+        </select>
+      </div>
+
+      <div class="work-control">
+        <label for="yearSort">Sort</label>
+        <select id="yearSort" aria-controls="researchGrid projectGrid">
+          <option value="newest">Newest</option>
+          <option value="oldest">Oldest</option>
+        </select>
+      </div>
+
+    </div>
+
+
+    <section class="section research-section" id="research">
+
+      <div class="section-label reveal">
+        02 / RESEARCH
+      </div>
+
+      <div class="section-heading reveal">
+
+        <h2>
+          Research.
+        </h2>
+
+        <p>
+          データの特徴を捉えるために、
+          問題ごとに異なる表現・分析方法を設計しています。
+        </p>
+
+      </div>
+
+      <div id="researchGrid" class="work-grid">
+        <div class="loading">
+          Loading research...
+        </div>
+      </div>
+
+    </section>
+
+
+    <section class="section projects-section" id="projects">
+
+      <div class="section-label reveal">
+        03 / PROJECTS
+      </div>
+
+      <div class="section-heading reveal">
+
+        <h2>
+          Projects.
+        </h2>
+
+        <p>
+          分析だけでなく、
+          実際にユーザーが触れるプロダクトとして実装します。
+        </p>
+
+      </div>
+
+      <div id="projectGrid" class="work-grid">
+        <div class="loading">
+          Loading project...
+        </div>
+      </div>
+
+    </section>
+
+
+    <section class="section skills-section" id="skills">
+
+      <div class="section-label reveal">
+        04 / SKILLS
+      </div>
+
+      <div class="skills-head reveal">
+
+        <h2 class="display-title">
+          Skills.
+        </h2>
+
+        <p>
+          Research, analysis and implementation.
+        </p>
+
+      </div>
+
+
+      <div class="skills-grid">
+
+        <article class="skill-card reveal">
+          <span class="skill-number">01</span>
+          <h3>Languages</h3>
+
+          <div class="skill-list">
+            <span>Korean</span>
+            <span>Japanese</span>
+            <span>English</span>
+          </div>
+        </article>
+
+
+        <article class="skill-card reveal">
+          <span class="skill-number">02</span>
+          <h3>Programming</h3>
+
+          <div class="skill-list">
+            <span>Python</span>
+            <span>JavaScript</span>
+            <span>HTML</span>
+            <span>CSS</span>
+          </div>
+        </article>
+
+
+        <article class="skill-card reveal">
+          <span class="skill-number">03</span>
+          <h3>AI / Machine Learning</h3>
+
+          <div class="skill-list">
+            <span>PyTorch</span>
+            <span>Deep Learning</span>
+            <span>Convolutional Neural Networks</span>
+            <span>Autoencoder</span>
+            <span>Transformer</span>
+            <span>Representation Learning</span>
+            <span>Unsupervised Learning</span>
+            <span>Feature Extraction</span>
+            <span>Dimensionality Reduction</span>
+          </div>
+        </article>
+
+
+        <article class="skill-card reveal">
+          <span class="skill-number">04</span>
+          <h3>Data / Analysis</h3>
+
+          <div class="skill-list">
+            <span>NumPy</span>
+            <span>Pandas</span>
+            <span>scikit-learn</span>
+            <span>Matplotlib</span>
+            <span>PCA</span>
+            <span>UMAP</span>
+            <span>FFT</span>
+            <span>Multifractal Analysis</span>
+            <span>Statistical Analysis</span>
+            <span>Data Visualization</span>
+          </div>
+        </article>
+
+
+        <article class="skill-card reveal">
+          <span class="skill-number">05</span>
+          <h3>Tools</h3>
+
+          <div class="skill-list">
+            <span>Git</span>
+            <span>GitHub</span>
+            <span>VS Code</span>
+            <span>Jupyter Notebook</span>
+            <span>Google Colab</span>
+            <span>AutoCAD</span>
+          </div>
+        </article>
+
+      </div>
+
+    </section>
+
+
+    <section class="contact section" id="contact">
+
+      <div class="section-label reveal">
+        05 / CONTACT
+      </div>
+
+      <div class="contact-content reveal">
+
+        <h2>
+          Contact.
+        </h2>
+
+        <a href="mailto:g2446029@tcu.ac.jp">
+          g2446029@tcu.ac.jp
+          <span>↗</span>
+        </a>
+
+        <p>
+          Tokyo City University<br>
+          Faculty of Design and Data Science
+        </p>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <footer>
+
+    <span>
+      Jinsung Kim
+    </span>
+
+    <span>
+      © 2026
+    </span>
+
+  </footer>
+
+
+
+  <div
+    class="project-modal"
+    id="projectModal"
+    aria-hidden="true"
+  >
+
+    <div
+      class="modal-background"
+      data-close-modal
+    ></div>
+
+    <article class="modal-window">
+
+      <button
+        class="modal-close"
+        type="button"
+        data-close-modal
+      >
+        ×
+      </button>
+
+
+      <section class="modal-hero">
+
+        <div class="modal-image-wrap">
+
+          <img
+            id="modalImage"
+            src=""
+            alt=""
+          >
+
+          <div class="modal-image-fallback">
+            IMAGE
+          </div>
+
+        </div>
+
+
+        <div class="modal-heading">
+
+          <span
+            class="modal-kicker"
+            id="modalKicker"
+          ></span>
+
+          <h2 id="modalTitle"></h2>
+
+          <p
+            class="modal-summary"
+            id="modalSummary"
+          ></p>
+
+
+          <div class="modal-event">
+
+            <small>
+              発表・実績
+            </small>
+
+            <strong id="modalVenue"></strong>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <section class="detail-row">
+
+        <span class="detail-num">
+          01
+        </span>
+
+        <div>
+
+          <h3>
+            概要
+          </h3>
+
+          <p id="modalOverview"></p>
+
+        </div>
+
+      </section>
+
+
+      <section class="detail-row">
+
+        <span class="detail-num">
+          02
+        </span>
+
+        <div>
+
+          <h3>
+            背景・目的
+          </h3>
+
+          <p id="modalBackground"></p>
+
+        </div>
+
+      </section>
+
+
+      <section class="detail-row">
+
+        <span class="detail-num">
+          03
+        </span>
+
+        <div>
+
+          <h3>
+            方法・仕組み
+          </h3>
+
+          <p id="modalMethod"></p>
+
+          <div
+            class="method-flow"
+            id="methodFlow"
+          ></div>
+
+        </div>
+
+      </section>
+
+
+      <section class="detail-row">
+
+        <span class="detail-num">
+          04
+        </span>
+
+        <div>
+
+          <h3>
+            結果・アウトプット
+          </h3>
+
+          <p id="modalResult"></p>
+
+        </div>
+
+      </section>
+
+
+      <div
+        class="modal-skills"
+        id="modalSkills"
+      ></div>
+
+
+      <div
+        class="video-area"
+        id="videoArea"
+      ></div>
+
+
+      <div
+        class="modal-actions"
+        id="modalActions"
+      ></div>
+
+    </article>
+
+  </div>
+
+</body>
+</html>
