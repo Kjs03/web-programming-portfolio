@@ -26,6 +26,11 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, "Hiragino Sans", "Yu Gothic", sans-serif;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  --weather-saturation: 1;
+  --weather-night-hue: 0deg;
+  --weather-night-brightness: 1;
+  transition: --weather-glow-1 2s ease, --weather-glow-2 2s ease,
+    --weather-glow-3 2s ease, --weather-saturation 2s ease;
 }
 
 a {
@@ -64,10 +69,11 @@ button {
 .ambient {
   position: fixed;
   border-radius: 50%;
-  filter: blur(100px);
+  filter: blur(100px) hue-rotate(var(--weather-night-hue)) brightness(var(--weather-night-brightness));
   pointer-events: none;
   z-index: -10;
   opacity: 0.65;
+  transition: background 2s ease, filter 2s ease;
 }
 
 .ambient-one {
@@ -107,13 +113,14 @@ button {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgba(255,255,255,0.69);
+  background: var(--weather-header, rgba(255,255,255,0.69));
   border: 1px solid rgba(255,255,255,0.84);
   border-radius: 22px;
   backdrop-filter: blur(26px) saturate(160%);
   -webkit-backdrop-filter: blur(26px) saturate(160%);
   box-shadow: 0 16px 50px rgba(50,50,70,0.07);
   z-index: 500;
+  transition: background 2s ease;
 }
 
 .brand {
@@ -216,12 +223,183 @@ button {
 
 /* Hero */
 
+/* Weather colours interpolate on existing layers; pointer variables stay independent. */
+@property --weather-glow-1 {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgba(190, 180, 255, .26);
+}
+
+@property --weather-glow-2 {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgba(160, 215, 255, .28);
+}
+
+@property --weather-glow-3 {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgba(175, 235, 212, .16);
+}
+
+@property --weather-saturation {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+
+body.weather-sunny {
+  --weather-glow-1: rgba(198, 174, 255, .36);
+  --weather-glow-2: rgba(155, 209, 255, .38);
+  --weather-glow-3: rgba(255, 250, 239, .16);
+  --weather-glow-spread-1: 40%;
+  --weather-glow-spread-2: 40%;
+  --weather-glow-spread-3: 44%;
+  --weather-saturation: 1.18;
+  --lavender: rgba(210, 190, 255, .48);
+  --blue: rgba(192, 222, 255, .46);
+  --mint: rgba(245, 249, 234, .24);
+  --weather-header: rgba(255, 255, 255, .90);
+}
+
+body.weather-cloudy {
+  --weather-glow-1: rgba(175, 179, 192, .52);
+  --weather-glow-2: rgba(179, 190, 200, .54);
+  --weather-glow-3: rgba(203, 207, 216, .50);
+  --weather-glow-spread-1: 68%;
+  --weather-glow-spread-2: 72%;
+  --weather-glow-spread-3: 85%;
+  --weather-saturation: .30;
+  --lavender: rgba(194, 198, 208, .60);
+  --blue: rgba(191, 201, 213, .60);
+  --mint: rgba(211, 217, 223, .48);
+  --weather-header: rgba(206, 217, 231, .88);
+}
+
+body.weather-rainy {
+  --weather-glow-1: rgba(177, 199, 237, .38);
+  --weather-glow-2: rgba(102, 196, 232, .60);
+  --weather-glow-3: rgba(139, 218, 230, .44);
+  --weather-glow-spread-1: 56%;
+  --weather-glow-spread-2: 78%;
+  --weather-glow-spread-3: 65%;
+  --weather-saturation: .98;
+  --lavender: rgba(187, 202, 239, .46);
+  --blue: rgba(130, 207, 239, .64);
+  --mint: rgba(159, 221, 230, .52);
+  --weather-header: rgba(193, 233, 248, .86);
+}
+
+body.weather-snow {
+  --weather-glow-1: rgba(223, 222, 249, .28);
+  --weather-glow-2: rgba(204, 231, 251, .35);
+  --weather-glow-3: rgba(234, 245, 249, .22);
+  --weather-saturation: .76;
+  --lavender: rgba(229, 228, 249, .46);
+  --blue: rgba(215, 237, 252, .50);
+  --mint: rgba(231, 246, 245, .38);
+  --weather-header: rgba(249, 253, 255, .84);
+}
+
+body.weather-storm {
+  --weather-glow-1: rgba(152, 157, 222, .36);
+  --weather-glow-2: rgba(143, 184, 233, .39);
+  --weather-glow-3: rgba(179, 213, 239, .20);
+  --weather-saturation: .90;
+  --lavender: rgba(179, 185, 234, .52);
+  --blue: rgba(179, 207, 244, .54);
+  --mint: rgba(199, 218, 241, .40);
+  --weather-header: rgba(229, 233, 252, .80);
+}
+
+/* Night adds a small adjustment to the active weather palette. */
+body[data-daytime="night"] {
+  --weather-night-hue: 8deg;
+  --weather-night-brightness: .97;
+}
+
+body.weather-sunny[data-daytime="night"] {
+  --weather-glow-1: rgba(197, 187, 246, .30);
+  --weather-glow-2: rgba(175, 208, 250, .36);
+}
+
+body.weather-rainy[data-daytime="night"] {
+  --weather-glow-2: rgba(108, 181, 232, .62);
+}
+
 .hero {
   position: relative;
   min-height: 100svh;
   display: flex;
   align-items: center;
   overflow: hidden;
+}
+
+.hero-weather {
+  position: absolute;
+  top: 145px;
+  right: var(--page);
+  width: 260px;
+  min-height: 128px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  color: #6d6e76;
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity .8s ease;
+}
+
+.hero-weather.is-ready {
+  visibility: visible;
+  opacity: 1;
+}
+
+.weather-location {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  white-space: nowrap;
+}
+
+.weather-current {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+#weather-icon {
+  margin: 0;
+  flex: 0 0 auto;
+  font-size: 56px;
+  line-height: 1.15;
+}
+
+.weather-reading {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 18px;
+}
+
+#weatherCurrent {
+  color: var(--text);
+  font-size: 40px;
+  font-weight: 300;
+  letter-spacing: -.04em;
+  line-height: 1;
+}
+
+.weather-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+}
+
+.weather-meta a {
+  font-size: 10px;
 }
 
 .hero-grid {
@@ -1030,6 +1208,36 @@ footer {
     font-size: 20vw;
   }
 
+  .hero-weather {
+    top: auto;
+    bottom: 65px;
+    width: 210px;
+    min-height: 98px;
+    gap: 9px;
+    font-size: 18px;
+  }
+
+  .weather-location {
+    font-size: 13px;
+    letter-spacing: .03em;
+  }
+
+  #weather-icon {
+    font-size: 40px;
+  }
+
+  #weatherCurrent {
+    font-size: 30px;
+  }
+
+  .weather-reading {
+    font-size: 16px;
+  }
+
+  .weather-current {
+    gap: 12px;
+  }
+
   .hero-footer {
     flex-direction: column;
     align-items: flex-start;
@@ -1597,45 +1805,48 @@ footer {
       transparent 72%
     );
   opacity: 1;
+  filter: saturate(var(--weather-saturation)) hue-rotate(var(--weather-night-hue)) brightness(var(--weather-night-brightness));
+  transition: opacity .5s ease, filter 2s ease;
 }
 
 .hero::after {
   background:
     radial-gradient(
       circle at 14% 34%,
-      rgba(190, 180, 255, 0.26),
-      transparent 36%
+      var(--weather-glow-1, rgba(190, 180, 255, 0.26)),
+      transparent var(--weather-glow-spread-1, 36%)
     ),
     radial-gradient(
       circle at 80% 66%,
-      rgba(160, 215, 255, 0.28),
-      transparent 40%
+      var(--weather-glow-2, rgba(160, 215, 255, 0.28)),
+      transparent var(--weather-glow-spread-2, 40%)
     ),
     radial-gradient(
       circle at 52% 92%,
-      rgba(175, 235, 212, 0.16),
-      transparent 34%
+      var(--weather-glow-3, rgba(175, 235, 212, 0.16)),
+      transparent var(--weather-glow-spread-3, 34%)
     );
   opacity: 0.95;
+  filter: saturate(var(--weather-saturation)) hue-rotate(var(--weather-night-hue)) brightness(var(--weather-night-brightness));
 }
 
 @keyframes heroAmbientBreathing {
   0% {
     background-position: 0% 8%, 100% 88%, 44% 100%;
     opacity: 0.72;
-    filter: saturate(100%);
+    filter: saturate(calc(1 * var(--weather-saturation))) hue-rotate(var(--weather-night-hue)) brightness(var(--weather-night-brightness));
   }
 
   50% {
     background-position: 10% 18%, 88% 68%, 56% 88%;
     opacity: 1;
-    filter: saturate(125%);
+    filter: saturate(calc(1.25 * var(--weather-saturation))) hue-rotate(var(--weather-night-hue)) brightness(var(--weather-night-brightness));
   }
 
   100% {
     background-position: 18% 4%, 80% 84%, 62% 94%;
     opacity: 0.78;
-    filter: saturate(108%);
+    filter: saturate(calc(1.08 * var(--weather-saturation))) hue-rotate(var(--weather-night-hue)) brightness(var(--weather-night-brightness));
   }
 }
 
@@ -1975,4 +2186,3 @@ footer {
     white-space: normal !important;
   }
 }
-

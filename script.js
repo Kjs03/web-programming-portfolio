@@ -1,3 +1,101 @@
+// Tokyo City University Yokohama Campus: 3-3-1 Ushikubo-Nishi, Yokohama.
+// Fixed campus coordinates, without browser geolocation.
+const WEATHER_LATITUDE = 35.5611;
+const WEATHER_LONGITUDE = 139.5756;
+const WEATHER_TIMEZONE = "Asia/Tokyo";
+
+// WMO code groups: https://open-meteo.com/en/docs
+function getWeatherState(code) {
+  // Classroom showWeather branches, followed by additional WMO groups.
+  if (code === 0) return "clear";
+  if (code >= 1 && code <= 3) return "cloudy";
+  if (code >= 51 && code <= 67) return "rainy";
+  if ([45, 48].includes(code)) return "cloudy";
+  if ([80, 81, 82].includes(code)) return "rainy";
+  if ([71, 73, 75, 77, 85, 86].includes(code)) return "snow";
+  if ([95, 96, 97, 99].includes(code)) return "storm";
+  return "other";
+}
+
+function showWeather(code, isDay) {
+  const state = getWeatherState(code);
+  const icons = { clear: "☀️", cloudy: "☁️", rainy: "🌧️", snow: "❄️", storm: "⛈️", other: "🌥️" };
+  const classes = { clear: "weather-sunny", cloudy: "weather-cloudy", rainy: "weather-rainy", snow: "weather-snow", storm: "weather-storm", other: "weather-other" };
+
+  // Weather icon → weather-only body classes → ambient and glass-header tint.
+  document.getElementById("weather-icon").textContent = icons[state];
+  document.body.classList.remove(...Object.values(classes));
+  document.body.classList.add(classes[state]);
+  document.body.dataset.daytime = isDay === 1 ? "day" : "night";
+  const hero = document.querySelector(".hero");
+  hero.dataset.weather = state;
+  hero.dataset.daytime = document.body.dataset.daytime;
+  return state;
+}
+
+let weatherClockInterval;
+
+async function loadWeather() {
+  const hero = document.querySelector(".hero");
+  const indicator = document.getElementById("heroWeather");
+  if (!hero || !indicator) return;
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000);
+
+  try {
+    const params = new URLSearchParams({
+      latitude: WEATHER_LATITUDE,
+      longitude: WEATHER_LONGITUDE,
+      current: "temperature_2m,weather_code,is_day",
+      temperature_unit: "celsius",
+      timezone: WEATHER_TIMEZONE
+    });
+
+    // fetch → response.json() → data.current.weather_code → showWeather → UI.
+    const response = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`, {
+      signal: controller.signal
+    });
+    if (!response.ok) throw new Error(`Weather API ${response.status}`);
+    const data = await response.json();
+    const current = data.current;
+    if (!current || !Number.isFinite(current.temperature_2m) ||
+        !Number.isInteger(current.weather_code) || ![0, 1].includes(current.is_day)) {
+      throw new Error("Invalid weather current data");
+    }
+
+    const state = showWeather(data.current.weather_code, current.is_day);
+    const labels = { clear: "Clear", cloudy: "Cloudy", rainy: "Rain", snow: "Snow", storm: "Storm", other: "Other" };
+    const temperature = Math.round(current.temperature_2m);
+    document.getElementById("weatherCurrent").textContent = `${temperature}°`;
+    document.getElementById("weatherState").textContent = labels[state];
+    indicator.setAttribute("aria-label", `Tokyo City University Yokohama Campus weather: ${temperature} degrees Celsius, ${labels[state]}`);
+
+    const clock = document.getElementById("weatherTime");
+    const formatter = new Intl.DateTimeFormat("en-GB", {
+      timeZone: WEATHER_TIMEZONE, hour: "2-digit", minute: "2-digit", hourCycle: "h23"
+    });
+    const updateClock = () => {
+      const now = new Date();
+      clock.textContent = formatter.format(now);
+      clock.dateTime = now.toISOString();
+    };
+    updateClock();
+    clearInterval(weatherClockInterval);
+    weatherClockInterval = setInterval(updateClock, 60000);
+    indicator.removeAttribute("aria-hidden");
+    indicator.classList.add("is-ready");
+  } catch (error) {
+    // Weather failure never interrupts CSV rendering or other interactions.
+    console.error("Weather unavailable:", error);
+    indicator.classList.remove("is-ready");
+    indicator.setAttribute("aria-hidden", "true");
+    clearInterval(weatherClockInterval);
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 const researchGrid =
   document.getElementById("researchGrid");
 
@@ -888,6 +986,7 @@ async function loadWorks() {
 
 observeReveal();
 loadWorks();
+loadWeather();
 updateScroll();
 
 
